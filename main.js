@@ -27,9 +27,9 @@ const modelsToLoad = [
 ];
 
 // 2. 고정 및 간격 설정
-const FIXED_POSITION_Y = -2.0;  // ⬅️ Y축 위치: -2.0으로 고정했습니다.
+const FIXED_POSITION_Y = -4.0;  // ⬅️ Y축 위치: -2.0으로 고정했습니다.
 const FIXED_POSITION_Z = 0.0;   // Z축 위치: 0.0으로 고정됩니다.
-const MODEL_SPACING_X = 4.0;    // ⬅️ X축 모델 간의 간격입니다. 이 값을 조정하여 겹치지 않게 조절하세요.
+const MODEL_SPACING_X = 3.0;    // ⬅️ X축 모델 간의 간격입니다. 이 값을 조정하여 겹치지 않게 조절하세요.
 
 // 🌟🌟🌟 ------------------------------------ 🌟🌟🌟
 
@@ -163,4 +163,5 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
