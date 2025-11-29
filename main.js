@@ -49,12 +49,12 @@ const loader = new GLTFLoader();
 // 🌟🌟🌟 개별 위치 조절을 위한 목록 🌟🌟🌟
 const modelsToLoad = [
     // ⚠️ 'shose.glb' 대신 'shoes.glb'로 가정하고 코드를 유지합니다.
-    { name: 'shoes.glb',    scale: 10, positionX: -3.0, positionY: -3, positionZ: 0.0 }, 
-    { name: 'bag.glb',      scale: 7, positionX: -3.0, positionY: -5, positionZ: 0.0 },
-    { name: 'ball.glb',     scale: 5, positionX: -2.0, positionY: -1, positionZ: 0.0 },
+    { name: 'shoes.glb',    scale: 10, positionX: -5.0, positionY: -1, positionZ: 0.0 }, 
+    { name: 'bag.glb',      scale: 7, positionX: -4.0, positionY: -4, positionZ: 0.0 },
+    { name: 'ball.glb',     scale: 5, positionX: -5.0, positionY: -2, positionZ: 0.0 },
     { name: 'book.glb',     scale: 10, positionX: -2.0,  positionY: -1, positionZ: 0.0 }, 
-    { name: 'close.glb',    scale: 5, positionX: 2.0,  positionY: -5, positionZ: 0.0 },
-    { name: 'glasses.glb',  scale: 20, positionX: 3.0,  positionY: -1, positionZ: 0.5 }, 
+    { name: 'close.glb',    scale: 5, positionX: 4.0,  positionY: -5, positionZ: 0.0 },
+    { name: 'glasses.glb',  scale: 20, positionX: 4.0,  positionY: -1, positionZ: 0.5 }, 
     { name: 'guard.glb',    scale: 10, positionX: 4.0,  positionY: -3, positionZ: 0.0 },
     { name: 'persimmon.glb',scale: 20, positionX: 5.0,  positionY: 2, positionZ: 0.0 },
 ];
@@ -147,5 +147,6 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
 
