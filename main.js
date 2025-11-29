@@ -1,4 +1,4 @@
-// main.js - 개별 모델 위치 및 회전 기능 최종 버전 (배경 흰색, Z축 0 고정)
+// main.js - 개별 모델 위치 및 회전 기능 최종 버전 (X축 일렬, Y/Z축 0 고정)
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -18,8 +18,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff); 
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-// 전체 모델이 잘 보이도록 카메라 위치를 조정
-camera.position.set(0, 5, 15); 
+// 모델이 일렬로 길게 배치되므로, X축을 중심으로 넓게 볼 수 있도록 카메라 위치 조정
+camera.position.set(0, 0, 15); 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46,31 +46,48 @@ controls.minDistance = 5;
 // 4. GLB 파일 로드!
 const loader = new GLTFLoader(); 
 
-// 🌟🌟🌟 개별 위치 조절 목록 (Z축 값을 모두 0.0으로 고정했습니다.) 🌟🌟🌟
+// 🌟🌟🌟 모델 크기 정보만 유지합니다. 위치는 코드가 자동으로 계산합니다. 🌟🌟🌟
 const modelsToLoad = [
-    // [이름]          [크기]  [X축(좌우)] [Y축(높이)] [Z축(앞뒤)=0.0]
-    { name: 'shoes.glb',    scale: 10, positionX: -6.0, positionY: 1, positionZ: 0.0 }, 
-    { name: 'bag.glb',      scale: 7, positionX: -4.0, positionY: -4, positionZ: 0.0 },
-    { name: 'ball.glb',     scale: 5, positionX: -5.0, positionY: 2, positionZ: 0.0 },
-    { name: 'book.glb',     scale: 10, positionX: -3.0,  positionY: -1, positionZ: 0.0 }, 
-    { name: 'close.glb',    scale: 5, positionX: 4.0,  positionY: -5, positionZ: 0.0 },
-    { name: 'glasses.glb',  scale: 20, positionX: 6.0,  positionY: -1, positionZ: 0.0 }, // 이전 0.5에서 0.0으로 수정
-    { name: 'guard.glb',    scale: 10, positionX: 5.0,  positionY: -3, positionZ: 0.0 },
-    { name: 'persimmon.glb',scale: 20, positionX: 5.0,  positionY: 2, positionZ: 0.0 },
+    { name: 'shoes.glb',    scale: 10 }, 
+    { name: 'bag.glb',      scale: 7 },
+    { name: 'ball.glb',     scale: 5 },
+    { name: 'book.glb',     scale: 10 }, 
+    { name: 'close.glb',    scale: 5 },
+    { name: 'glasses.glb',  scale: 20 }, 
+    { name: 'guard.glb',    scale: 10 },
+    { name: 'persimmon.glb',scale: 20 },
 ];
-// 🌟 X축과 Y축 값만 조정하여 원하는 배치와 높이를 설정할 수 있습니다. 🌟
 
-// 각 모델을 순회하며 로드하고 개별 위치에 배치합니다.
+// --- 💡 X축 일렬 배치 계산 로직 ---
+const spacing = 2.0; // 모델 간의 간격 (조절 가능)
+const modelCount = modelsToLoad.length;
+// 모델들을 중앙(0)을 중심으로 좌우로 배치하기 위한 시작점 계산
+const startX = -((modelCount - 1) * spacing) / 2; 
+
+modelsToLoad.forEach((modelInfo, index) => {
+    // X축 위치 계산: 시작점 + (인덱스 * 간격)
+    modelInfo.positionX = startX + (index * spacing); 
+    
+    // 🌟 Y축 (높이) = 0.0 고정
+    modelInfo.positionY = 0.0; 
+    
+    // 🌟 Z축 (깊이) = 0.0 고정 (평면 배치)
+    modelInfo.positionZ = 0.0;
+});
+// ------------------------------------
+
+
+// 각 모델을 순회하며 로드하고 계산된 위치에 배치합니다.
 modelsToLoad.forEach((modelInfo, index) => {
     loader.load(
         modelInfo.name,
         function (gltf) {
             const model = gltf.scene;
 
-            // **개별 위치 설정**
+            // **계산된 X축 일렬 위치 및 Y/Z축 0 고정**
             model.position.x = modelInfo.positionX; 
             model.position.y = modelInfo.positionY; 
-            model.position.z = modelInfo.positionZ; // Z축 0.0 고정
+            model.position.z = modelInfo.positionZ; 
             
             // 모델 크기 및 userData 설정
             model.scale.set(modelInfo.scale, modelInfo.scale, modelInfo.scale);
