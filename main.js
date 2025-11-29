@@ -1,4 +1,4 @@
-// main.js - 개별 모델 위치 및 회전 기능 최종 버전
+// main.js - 개별 모델 위치 및 회전 기능 최종 버전 (배경 흰색)
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -14,7 +14,8 @@ const mouse = new THREE.Vector2();
 
 // 1. 기본 3요소 설정
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xeeeeee); // 배경색
+// 🌟🌟🌟 배경색을 순수한 흰색(0xffffff)으로 설정했습니다. 🌟🌟🌟
+scene.background = new THREE.Color(0xffffff); 
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 // 카메라 위치를 뒤로 충분히 빼서 전체 모델이 보이게 합니다.
@@ -45,20 +46,18 @@ controls.minDistance = 2;       // 최소 줌 거리 제한
 // 4. GLB 파일 로드!
 const loader = new GLTFLoader(); 
 
-// 🌟🌟🌟 개별 위치 조절을 위한 목록 (여기만 수정하세요!) 🌟🌟🌟
+// 🌟🌟🌟 개별 위치 조절을 위한 목록 🌟🌟🌟
 const modelsToLoad = [
-    // [이름]          [크기]  [X축(좌우)] [Y축(높이)] [Z축(앞뒤)]
-    // X축: -3.0 (왼쪽) 부터 4.0 (오른쪽) 까지 일렬 배치 예시입니다.
-    { name: 'shose.glb',    scale: 20, positionX: -3.0, positionY: 0.5, positionZ: 0.0 },
-    { name: 'bag.glb',      scale: 7, positionX: -2.0, positionY: 0.5, positionZ: 0.0 },
-    { name: 'ball.glb',     scale: 5, positionX: -1.0, positionY: 0.5, positionZ: 0.0 },
-    { name: 'book.glb',     scale: 10, positionX: 0.0,  positionY: 0.5, positionZ: 0.0 }, // 중앙
-    { name: 'close.glb',    scale: 5, positionX: 1.0,  positionY: 0.5, positionZ: 0.0 },
-    { name: 'glasses.glb',  scale: 20, positionX: 2.0,  positionY: 0.8, positionZ: 0.5 }, // Z축을 0.5로 설정해 약간 앞으로 튀어나오게 했습니다.
-    { name: 'guard.glb',    scale: 10, positionX: 3.0,  positionY: 0.5, positionZ: 0.0 },
-    { name: 'persimmon.glb',scale: 20, positionX: 4.0,  positionY: 0.5, positionZ: 0.0 },
+    // ⚠️ 'shose.glb' 대신 'shoes.glb'로 가정하고 코드를 유지합니다.
+    { name: 'shoes.glb',    scale: 20, positionX: -3.0, positionY: 0.5, positionZ: 0.0 }, 
+    { name: 'bag.glb',      scale: 7, positionX: -3.0, positionY: 0.5, positionZ: 0.0 },
+    { name: 'ball.glb',     scale: 5, positionX: -2.0, positionY: 0.5, positionZ: 0.0 },
+    { name: 'book.glb',     scale: 10, positionX: -2.0,  positionY: 0.5, positionZ: 0.0 }, 
+    { name: 'close.glb',    scale: 5, positionX: 2.0,  positionY: 0.5, positionZ: 0.0 },
+    { name: 'glasses.glb',  scale: 20, positionX: 3.0,  positionY: 0.8, positionZ: 0.5 }, 
+    { name: 'guard.glb',    scale: 10, positionX: 4.0,  positionY: 0.5, positionZ: 0.0 },
+    { name: 'persimmon.glb',scale: 20, positionX: 5.0,  positionY: 0.5, positionZ: 0.0 },
 ];
-// 🌟🌟🌟 이 modelsToLoad 배열의 숫자만 수정하면 됩니다. 🌟🌟🌟
 
 // 각 모델을 순회하며 로드하고 개별 위치에 배치합니다.
 modelsToLoad.forEach((modelInfo, index) => {
@@ -67,7 +66,7 @@ modelsToLoad.forEach((modelInfo, index) => {
         function (gltf) {
             const model = gltf.scene;
 
-            // **개별 위치 설정:** modelsToLoad 배열의 position 값 적용
+            // 개별 위치 설정
             model.position.x = modelInfo.positionX; 
             model.position.y = modelInfo.positionY; 
             model.position.z = modelInfo.positionZ; 
@@ -118,7 +117,7 @@ function onMouseMove(event) {
 
     const deltaX = event.clientX - previousMousePosition.x;
     
-    // Y축 회전 적용: 마우스를 좌우로 움직이면 선택된 모델만 Y축으로 회전
+    // Y축 회전 적용
     intersectedObject.rotation.y += deltaX * 0.01; 
 
     previousMousePosition.x = event.clientX;
@@ -148,8 +147,3 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-
-
-
-
