@@ -1,4 +1,4 @@
-// main.js - 개별 모델 위치 및 회전 기능 최종 버전 (배경 흰색)
+// main.js - 개별 모델 위치 및 회전 기능 최종 버전 (배경 흰색, 원형 배치)
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -14,12 +14,12 @@ const mouse = new THREE.Vector2();
 
 // 1. 기본 3요소 설정
 const scene = new THREE.Scene();
-// 🌟🌟🌟 배경색을 순수한 흰색(0xffffff)으로 설정했습니다. 🌟🌟🌟
+// 배경색을 순수한 흰색(0xffffff)으로 설정했습니다.
 scene.background = new THREE.Color(0xffffff); 
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-// 카메라 위치를 뒤로 충분히 빼서 전체 모델이 보이게 합니다.
-camera.position.set(0, 3, 10); 
+// 원형 배치가 넓으므로 카메라를 약간 더 뒤로 빼서 잘 보이게 조정합니다.
+camera.position.set(0, 5, 15); 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -37,36 +37,51 @@ scene.add(directionalLight);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.target.set(0, 0, 0);   // 카메라가 원점(0,0,0)을 바라보게 고정
-controls.enablePan = false;     // 카메라 이동 방지
-controls.enableRotate = false;  // 마우스 드래그 시 전체 씬 회전 방지
-controls.maxDistance = 15;      // 최대 줌 거리 제한
-controls.minDistance = 2;       // 최소 줌 거리 제한
+controls.enablePan = false;     
+controls.enableRotate = false;  
+controls.maxDistance = 20;      
+controls.minDistance = 5;       
 
 
 // 4. GLB 파일 로드!
 const loader = new GLTFLoader(); 
 
-// 🌟🌟🌟 개별 위치 조절을 위한 목록 🌟🌟🌟
+// 🌟🌟🌟 모델 크기와 높이 정보는 사용자 설정 값을 그대로 유지합니다. 🌟🌟🌟
 const modelsToLoad = [
-    // ⚠️ 'shose.glb' 대신 'shoes.glb'로 가정하고 코드를 유지합니다.
-    { name: 'shoes.glb',    scale: 10, positionX: -5.0, positionY: 1, positionZ: 0.0 }, 
-    { name: 'bag.glb',      scale: 7, positionX: -4.0, positionY: -4, positionZ: 0.0 },
-    { name: 'ball.glb',     scale: 5, positionX: -5.0, positionY: 2, positionZ: 0.0 },
-    { name: 'book.glb',     scale: 10, positionX: -3.0,  positionY: -1, positionZ: 0.0 }, 
-    { name: 'close.glb',    scale: 5, positionX: 4.0,  positionY: -5, positionZ: 0.0 },
-    { name: 'glasses.glb',  scale: 20, positionX: 6.0,  positionY: -1, positionZ: 0.5 }, 
-    { name: 'guard.glb',    scale: 10, positionX: 5.0,  positionY: -3, positionZ: 0.0 },
-    { name: 'persimmon.glb',scale: 20, positionX: 5.0,  positionY: 2, positionZ: 0.0 },
+    { name: 'shoes.glb',    scale: 10, positionY: 1 }, 
+    { name: 'bag.glb',      scale: 7, positionY: -4 },
+    { name: 'ball.glb',     scale: 5, positionY: 2 },
+    { name: 'book.glb',     scale: 10, positionY: -1 }, 
+    { name: 'close.glb',    scale: 5, positionY: -5 },
+    { name: 'glasses.glb',  scale: 20, positionY: -1 }, 
+    { name: 'guard.glb',    scale: 10, positionY: -3 },
+    { name: 'persimmon.glb',scale: 20, positionY: 2 },
 ];
 
-// 각 모델을 순회하며 로드하고 개별 위치에 배치합니다.
+// --- 💡 원형 배치 계산 로직 ---
+const radius = 7.0; // 원형 배치의 반지름 (원하는 크기로 조절 가능)
+const modelCount = modelsToLoad.length;
+const angleStep = (2 * Math.PI) / modelCount; // 각 모델 간의 각도 간격
+
+modelsToLoad.forEach((modelInfo, index) => {
+    // 0도부터 시작하여 각 모델의 각도를 계산
+    const angle = index * angleStep;
+    
+    // 🌟 X, Z 위치를 원형으로 계산 (삼각 함수 사용)
+    modelInfo.positionX = radius * Math.cos(angle); 
+    modelInfo.positionZ = radius * Math.sin(angle); 
+});
+// ------------------------------------
+
+
+// 각 모델을 순회하며 로드하고 계산된 위치에 배치합니다.
 modelsToLoad.forEach((modelInfo, index) => {
     loader.load(
         modelInfo.name,
         function (gltf) {
             const model = gltf.scene;
 
-            // 개별 위치 설정
+            // **원형 배치 및 높이 설정**
             model.position.x = modelInfo.positionX; 
             model.position.y = modelInfo.positionY; 
             model.position.z = modelInfo.positionZ; 
@@ -147,7 +162,3 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-
-
-
