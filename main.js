@@ -52,7 +52,7 @@ const modelsToLoad = [
     { name: 'shose.glb',    scale: 3, positionX: -3.0, positionY: 0.5, positionZ: 0.0 },
     { name: 'bag.glb',      scale: 3, positionX: -2.0, positionY: 0.5, positionZ: 0.0 },
     { name: 'ball.glb',     scale: 3, positionX: -1.0, positionY: 0.5, positionZ: 0.0 },
-    { name: 'book.glb',     scale: 10, positionX: 0.0,  positionY: 0.5, positionZ: 0.0 }, // 중앙
+    { name: 'book.glb',     scale: 500, positionX: 0.0,  positionY: 0.5, positionZ: 0.0 }, // 중앙
     { name: 'close.glb',    scale: 3, positionX: 1.0,  positionY: 0.5, positionZ: 0.0 },
     { name: 'glasses.glb',  scale: 10, positionX: 2.0,  positionY: 0.8, positionZ: 0.5 }, // Z축을 0.5로 설정해 약간 앞으로 튀어나오게 했습니다.
     { name: 'guard.glb',    scale: 3, positionX: 3.0,  positionY: 0.5, positionZ: 0.0 },
@@ -148,4 +148,5 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
