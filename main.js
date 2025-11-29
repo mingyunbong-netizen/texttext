@@ -1,24 +1,45 @@
-// main.js - 개별 모델 위치 및 회전 기능 최종 버전 (X축 일렬, Y/Z축 0 고정)
+// main.js - 3D 모델 뷰어 최종 버전 (Y축 -2.0 고정, X축 일렬 배치)
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// --- 전역 변수 선언 ---
-let intersectedObject = null; // 현재 마우스로 잡고 있는(선택된) 모델
-let isDragging = false;       // 마우스 드래그 상태
-let previousMousePosition = { x: 0, y: 0 }; // 이전 마우스 위치 저장
+// --- 전역 변수 및 설정 ---
+let intersectedObject = null; 
+let isDragging = false;       
+let previousMousePosition = { x: 0, y: 0 }; 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 
+// 🌟🌟🌟 모델 크기 및 배치 설정 (이곳만 수정하세요!) 🌟🌟🌟
+// 1. 모델 크기 정보
+const modelsToLoad = [
+    // [이름]           [크기]
+    { name: 'shoes.glb',    scale: 10 }, 
+    { name: 'bag.glb',      scale: 7 },
+    { name: 'ball.glb',     scale: 5 },
+    { name: 'book.glb',     scale: 10 }, 
+    { name: 'close.glb',    scale: 5 },
+    { name: 'glasses.glb',  scale: 20 }, 
+    { name: 'guard.glb',    scale: 10 },
+    { name: 'persimmon.glb',scale: 20 },
+];
+
+// 2. 고정 및 간격 설정
+const FIXED_POSITION_Y = -2.0;  // ⬅️ Y축 위치: -2.0으로 고정했습니다.
+const FIXED_POSITION_Z = 0.0;   // Z축 위치: 0.0으로 고정됩니다.
+const MODEL_SPACING_X = 2.0;    // ⬅️ X축 모델 간의 간격입니다. 이 값을 조정하여 겹치지 않게 조절하세요.
+
+// 🌟🌟🌟 ------------------------------------ 🌟🌟🌟
+
+
 // 1. 기본 3요소 설정
 const scene = new THREE.Scene();
-// 배경색을 순수한 흰색(0xffffff)으로 설정
-scene.background = new THREE.Color(0xffffff); 
+scene.background = new THREE.Color(0xffffff); // 배경색: 순수 흰색
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-// 모델이 일렬로 길게 배치되므로, X축을 중심으로 넓게 볼 수 있도록 카메라 위치 조정
+// Y축 -2.0 위치를 중심으로 볼 수 있도록 카메라 위치 조정
 camera.position.set(0, 0, 15); 
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -46,48 +67,25 @@ controls.minDistance = 5;
 // 4. GLB 파일 로드!
 const loader = new GLTFLoader(); 
 
-// 🌟🌟🌟 모델 크기 정보만 유지합니다. 위치는 코드가 자동으로 계산합니다. 🌟🌟🌟
-const modelsToLoad = [
-    { name: 'shoes.glb',    scale: 10 }, 
-    { name: 'bag.glb',      scale: 7 },
-    { name: 'ball.glb',     scale: 5 },
-    { name: 'book.glb',     scale: 10 }, 
-    { name: 'close.glb',    scale: 5 },
-    { name: 'glasses.glb',  scale: 20 }, 
-    { name: 'guard.glb',    scale: 10 },
-    { name: 'persimmon.glb',scale: 20 },
-];
-
-// --- 💡 X축 일렬 배치 계산 로직 ---
-const spacing = 2.0; // 모델 간의 간격 (조절 가능)
+// --- 💡 X축 일렬 배치 위치 자동 계산 ---
 const modelCount = modelsToLoad.length;
 // 모델들을 중앙(0)을 중심으로 좌우로 배치하기 위한 시작점 계산
-const startX = -((modelCount - 1) * spacing) / 2; 
+const startX = -((modelCount - 1) * MODEL_SPACING_X) / 2; 
 
-modelsToLoad.forEach((modelInfo, index) => {
-    // X축 위치 계산: 시작점 + (인덱스 * 간격)
-    modelInfo.positionX = startX + (index * spacing); 
-    
-    // 🌟 Y축 (높이) = 0.0 고정
-    modelInfo.positionY = 0.0; 
-    
-    // 🌟 Z축 (깊이) = 0.0 고정 (평면 배치)
-    modelInfo.positionZ = 0.0;
-});
-// ------------------------------------
-
-
-// 각 모델을 순회하며 로드하고 계산된 위치에 배치합니다.
 modelsToLoad.forEach((modelInfo, index) => {
     loader.load(
         modelInfo.name,
         function (gltf) {
             const model = gltf.scene;
 
-            // **계산된 X축 일렬 위치 및 Y/Z축 0 고정**
-            model.position.x = modelInfo.positionX; 
-            model.position.y = modelInfo.positionY; 
-            model.position.z = modelInfo.positionZ; 
+            // **X축 일렬 위치 계산**
+            model.position.x = startX + (index * MODEL_SPACING_X); 
+            
+            // **Y축 (높이) = -2.0 고정**
+            model.position.y = FIXED_POSITION_Y; 
+            
+            // **Z축 (깊이) = 0.0 고정**
+            model.position.z = FIXED_POSITION_Z; 
             
             // 모델 크기 및 userData 설정
             model.scale.set(modelInfo.scale, modelInfo.scale, modelInfo.scale);
