@@ -12,7 +12,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xeeeeee); // 배경색을 밝은 회색으로 설정
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(2, 2, 2); // 카메라를 적당한 위치에 배치
+camera.position.set(4, 4, 4); // 카메라 위치를 더 넓게 조정하여 여러 모델을 담습니다.
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -32,29 +32,49 @@ controls.enableDamping = true; // 움직임을 부드럽게 합니다.
 
 
 // 4. GLB 파일 로드!
-// **오류 수정 부분: GLTFLoader 인스턴스를 생성하여 loader 변수에 할당합니다.**
 const loader = new GLTFLoader(); 
 
-// **파일 경로 설정:** 새로운 파일 이름 'shoes.glb'를 사용합니다.
-const modelPath = 'shoes.glb'; 
+// 💡 헬퍼 함수: min부터 max 사이의 랜덤 값을 반환합니다.
+function getRandomPosition(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
-loader.load(
-    modelPath,
-    // 로드 성공 시
-    function (gltf) {
-        const model = gltf.scene;
-        // 필요하다면 모델 크기를 여기서 조절하세요.
-        // model.scale.set(0.1, 0.1, 0.1); 
-        scene.add(model);
-        console.log('3D 모델 로드 완료! (shoes.glb)');
-    },
-    // 로드 중 (선택 사항)
-    undefined, 
-    // 에러 발생 시
-    function (error) {
-        console.error('모델 로드 중 에러 발생:', error);
-    }
-);
+// 로드할 파일 목록을 정의합니다. (shose.glb로 파일명이 확인되어 수정했습니다.)
+const modelsToLoad = [
+    { name: 'shose.glb', scale: 1.5 },   // 크기를 조금 키워봤습니다.
+    { name: 'bag.glb', scale: 1.5 },
+    { name: 'ball.glb', scale: 1.5 },
+    { name: 'book.glb', scale: 1.5 },
+    { name: 'close.glb', scale: 1.5 },
+    { name: 'glasses.glb', scale: 5.0 }, // 안경은 작을 수 있어 더 크게 키워봤습니다.
+    { name: 'guard.glb', scale: 1.5 },
+    { name: 'persimmon.glb', scale: 1.5 },
+];
+
+// 각 모델을 순회하며 로드하고 랜덤 위치에 배치합니다.
+modelsToLoad.forEach(modelInfo => {
+    loader.load(
+        modelInfo.name,
+        function (gltf) {
+            const model = gltf.scene;
+
+            // **랜덤 위치 설정:** (X, Y, Z 모두 -3에서 3 사이의 랜덤한 위치)
+            model.position.x = getRandomPosition(-3.0, 3.0); 
+            model.position.y = getRandomPosition(0.0, 1.0); // Y축은 0에서 1.0 사이 (바닥 위)
+            model.position.z = getRandomPosition(-3.0, 3.0); 
+
+            // 모델 크기 조절
+            model.scale.set(modelInfo.scale, modelInfo.scale, modelInfo.scale);
+
+            scene.add(model);
+            console.log(`${modelInfo.name} 로드 완료!`);
+        },
+        undefined, 
+        function (error) {
+            console.error(`모델 로드 중 에러 발생: ${modelInfo.name}`, error);
+        }
+    );
+});
 
 
 // 5. 렌더링 루프 (애니메이션)
