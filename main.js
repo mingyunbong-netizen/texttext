@@ -50,10 +50,10 @@ const modelsToLoad = [
     // [이름]          [크기]  [X축(좌우)] [Y축(높이)] [Z축(앞뒤)]
     // X축: -3.0 (왼쪽) 부터 4.0 (오른쪽) 까지 일렬 배치 예시입니다.
     { name: 'shose.glb',    scale: 20, positionX: -3.0, positionY: 0.5, positionZ: 0.0 },
-    { name: 'bag.glb',      scale: 20, positionX: -2.0, positionY: 0.5, positionZ: 0.0 },
-    { name: 'ball.glb',     scale: 20, positionX: -1.0, positionY: 0.5, positionZ: 0.0 },
+    { name: 'bag.glb',      scale: 10, positionX: -2.0, positionY: 0.5, positionZ: 0.0 },
+    { name: 'ball.glb',     scale: 10, positionX: -1.0, positionY: 0.5, positionZ: 0.0 },
     { name: 'book.glb',     scale: 20, positionX: 0.0,  positionY: 0.5, positionZ: 0.0 }, // 중앙
-    { name: 'close.glb',    scale: 20, positionX: 1.0,  positionY: 0.5, positionZ: 0.0 },
+    { name: 'close.glb',    scale: 10, positionX: 1.0,  positionY: 0.5, positionZ: 0.0 },
     { name: 'glasses.glb',  scale: 20, positionX: 2.0,  positionY: 0.8, positionZ: 0.5 }, // Z축을 0.5로 설정해 약간 앞으로 튀어나오게 했습니다.
     { name: 'guard.glb',    scale: 20, positionX: 3.0,  positionY: 0.5, positionZ: 0.0 },
     { name: 'persimmon.glb',scale: 20, positionX: 4.0,  positionY: 0.5, positionZ: 0.0 },
@@ -148,6 +148,7 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
 
 
